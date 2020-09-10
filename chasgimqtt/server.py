@@ -33,7 +33,7 @@ async def mqtt_group_discard(future, channel_layer, group):
 class Server(object):
     def __init__(self, channel, host, port, username=None, password=None, 
             client_id=None, topics_subscription=None, mqtt_channel_name = None, 
-            mqtt_channel_sub=None, mqtt_channel_pub=None):
+            mqtt_channel_sub=None, mqtt_channel_pub=None, ca_certs=None, certfile=None, keyfile=None):
 
         self.channel = channel
         self.host = host
@@ -57,6 +57,11 @@ class Server(object):
         self.mqtt_channel_name = mqtt_channel_name or "mqtt"
         self.mqtt_channel_pub = mqtt_channel_pub or "mqtt.pub"
         self.mqtt_channel_sub = mqtt_channel_sub or "mqtt.sub"
+
+        # TLS support
+        self.ca_certs = ca_certs
+        self.certfile = certfile
+        self.keyfile = keyfile
 
 
     def _on_connect(self, client, userdata, flags, rc):
@@ -138,6 +143,9 @@ class Server(object):
         if self.username:
             self.client.username_pw_set(username=self.username, password=self.password)
         
+        if self.ca_certs:
+            self.client.tls_set(ca_certs=self.ca_certs, certfile=self.certfile, keyfile=self.keyfile)
+
         self.client.connect(self.host, self.port)
 
         logger.info("Starting loop")

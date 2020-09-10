@@ -32,6 +32,11 @@ def main():
                               "path.to.module:instance.path"))
     parser.add_argument("-U", "--username", help="MQTT username to authorised connection")
     parser.add_argument("-P", "--password", help="MQTT password to authorised connection")
+    # TLS
+    parser.add_argument("--cacerts", help="CA certificate for TLS connection")
+    parser.add_argument("--certfile", help="Client certificate file for TLS connection")
+    parser.add_argument("--keyfile", help="Client keyfile for TLS connection")
+
     parser.add_argument("-i", "--id", dest="client_id", help="MQTT Cliente ID")
 
     parser.add_argument("--topic", action="append", dest="topics",
@@ -91,7 +96,10 @@ def main():
             topics_subscription=topics, 
             mqtt_channel_name=args.channel_name, 
             mqtt_channel_sub=args.channel_sub, 
-            mqtt_channel_pub=args.channel_pub
+            mqtt_channel_pub=args.channel_pub,
+            ca_certs=args.cacerts,
+            certfile=args.certfile,
+            keyfile=args.keyfile
         )
 
     server.run()
